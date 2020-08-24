@@ -24,6 +24,7 @@ struct ContentView: View {
                 })
                 Spacer()
             }
+            
             CollapsibleHStack(data: data, collapsed: collapsed) { element in
                 Rectangle()
                     .fill(element.color)
@@ -45,10 +46,12 @@ struct ContentView_Previews: PreviewProvider {
 struct CollapsibleHStack<Element, Content: View>: View {
     var data: [Element]
     var collapsed: Bool = false
+    var alignment: VerticalAlignment = .center
+    var spacing: CGFloat?
     var content: (Element) -> Content
 
     var body: some View {
-        HStack {
+        HStack(alignment: alignment, spacing: spacing) {
             ForEach(data.indices) { idx in
                 content(self.data[idx])
                     .frame(width: collapsed && idx < self.data.count - 1 ? 10 : nil, alignment: .leading)
