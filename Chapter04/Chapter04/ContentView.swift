@@ -13,7 +13,10 @@ struct ContentView: View {
                 rectangleInfo(color: Color.green, size: 60),
                 rectangleInfo(color: Color.blue, size: 80)]
     
+    var alignmentData = [("Top", VerticalAlignment.top), ("Center", VerticalAlignment.center), ("Bottom", VerticalAlignment.bottom)]
+    
     @State var collapsed: Bool = false
+    @State var alignment: Int = 1
     
     var body: some View {
         VStack {
@@ -25,7 +28,9 @@ struct ContentView: View {
                 Spacer()
             }
             
-            CollapsibleHStack(data: data, collapsed: collapsed) { element in
+            SegmentedControl<VerticalAlignment>(values: alignmentData, selectedValue: $alignment.animation())
+            
+            CollapsibleHStack(data: data, collapsed: collapsed, alignment: alignmentData[alignment].1) { element in
                 Rectangle()
                     .fill(element.color)
                     .frame(width: element.size, height: element.size)
@@ -57,5 +62,19 @@ struct CollapsibleHStack<Element, Content: View>: View {
                     .frame(width: collapsed && idx < self.data.count - 1 ? 10 : nil, alignment: .leading)
             }
         }
+    }
+}
+
+struct SegmentedControl<Element>: View {
+    
+    var values: [(String, Element)] = []
+    @Binding var selectedValue: Int
+
+    var body: some View {
+        Picker("Alignment", selection: $selectedValue) {
+            ForEach(0..<values.count) { index in
+                Text(self.values[index].0).tag(index)
+            }
+        }.pickerStyle(SegmentedPickerStyle())
     }
 }
