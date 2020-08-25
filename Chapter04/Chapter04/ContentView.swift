@@ -18,6 +18,7 @@ struct ContentView: View {
     
     @State var collapsed: Bool = false
     @State var alignment: Int = 1
+    @State var spacing: Double = 8
     
     var body: some View {
         VStack {
@@ -31,11 +32,13 @@ struct ContentView: View {
             
             SegmentedControl<VerticalAlignment>(values: alignmentData, selectedValue: $alignment.animation())
             
-            CollapsibleHStack(data: data, collapsed: collapsed, alignment: alignmentData[alignment].value) { element in
+            CollapsibleHStack(data: data, collapsed: collapsed, alignment: alignmentData[alignment].value, spacing: CGFloat(spacing)) { element in
                 Rectangle()
                     .fill(element.color)
                     .frame(width: element.size, height: element.size)
             }
+            
+            Slider(value: $spacing, in: 0...16, step: 1)
         }
     }
 }
