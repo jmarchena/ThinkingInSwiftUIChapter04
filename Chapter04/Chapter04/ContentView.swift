@@ -9,11 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     typealias rectangleInfo = (color: Color, size: CGFloat)
+    typealias AlignmentInfo = (label: String, value: VerticalAlignment)
     var data = [rectangleInfo(color: Color.red, size: 100),
                 rectangleInfo(color: Color.green, size: 60),
                 rectangleInfo(color: Color.blue, size: 80)]
     
-    var alignmentData = [("Top", VerticalAlignment.top), ("Center", VerticalAlignment.center), ("Bottom", VerticalAlignment.bottom)]
+    var alignmentData: [AlignmentInfo] = [("Top", VerticalAlignment.top), ("Center", VerticalAlignment.center), ("Bottom", VerticalAlignment.bottom)]
     
     @State var collapsed: Bool = false
     @State var alignment: Int = 1
@@ -30,7 +31,7 @@ struct ContentView: View {
             
             SegmentedControl<VerticalAlignment>(values: alignmentData, selectedValue: $alignment.animation())
             
-            CollapsibleHStack(data: data, collapsed: collapsed, alignment: alignmentData[alignment].1) { element in
+            CollapsibleHStack(data: data, collapsed: collapsed, alignment: alignmentData[alignment].value) { element in
                 Rectangle()
                     .fill(element.color)
                     .frame(width: element.size, height: element.size)
@@ -67,13 +68,13 @@ struct CollapsibleHStack<Element, Content: View>: View {
 
 struct SegmentedControl<Element>: View {
     
-    var values: [(String, Element)] = []
+    var values: [(label: String, value: Element)] = []
     @Binding var selectedValue: Int
 
     var body: some View {
         Picker("Alignment", selection: $selectedValue) {
             ForEach(0..<values.count) { index in
-                Text(self.values[index].0).tag(index)
+                Text(self.values[index].label).tag(index)
             }
         }.pickerStyle(SegmentedPickerStyle())
     }
